@@ -15,26 +15,38 @@ async function renderProducts() {
     let products = await getProducts();
     products.forEach(product => {
         console.log(product.imageUrl)
+
         let Items = document.getElementById('items');
+        let NewLink = document.createElement("a");
+        let NewArticle = document.createElement("article");
+        let NewImage= document.createElement("img"); 
+        let NewName = document.createElement("h3");
+        let NewDescription = document.createElement("p");
 
-        let NewItem = document.createElement("a");
+        Items.appendChild(NewLink)
 
-        Items.appendChild(NewItem)
-        NewItem.setAttribute("href", `./product.html?id=${product._id}`)
-        NewItem.innerHTML =
-            `
- 
-<article>
-  <img src="${product.imageUrl}" alt="${product.altTxt}">
-  <h3 class="productName">${product.name}</h3>
-  <p class="productDescription">${product.description}</p>
-</article>
+        NewLink.appendChild(NewArticle)
 
-`
+        NewArticle.appendChild(NewImage)
+        NewArticle.appendChild(NewName)
+        NewArticle.appendChild(NewDescription)
 
+        NewLink.setAttribute("href", `./product.html?id=${product._id}`)
+
+        NewImage.setAttribute("src", `${product.imageUrl}`)
+        NewImage.setAttribute("alt", `${product.altTxt}`)
+
+        NewName.setAttribute("class", `productName`)
+        NewName.innerHTML =`${product.name}`
+
+        NewDescription.setAttribute("class", `productDescription`)
+        NewDescription.innerHTML =`${product.description}`
+        
+        
     });
- 
+    
 }
 
 renderProducts();
+
 
