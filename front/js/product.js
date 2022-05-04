@@ -1,6 +1,13 @@
+let paramName = "id"
 
-const id = new URL(window.location.href).searchParams.get("id");
+function getParamUrl(paramName){
 
+    const id = new URL(window.location.href).searchParams.get(paramName);
+    return id
+}
+
+
+const id= getParamUrl(paramName)
 
 
 

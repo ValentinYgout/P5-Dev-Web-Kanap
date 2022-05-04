@@ -296,13 +296,7 @@ function validateContactForm() {
 
     )
 
-
-
     return CheckBeforeSending;
-
-
-
-
 
 }
 
