@@ -29,7 +29,7 @@ async function renderProduct() {
    
     let product = await getProduct(id);
 
-    let img =document.querySelector("body > main > div > section > article > div.item__img > img")
+    let img =document.querySelector("body > main > div > section > article > div.item__img > img");
     img.src = product.imageUrl;
     img.alt = product.altTxt;
 
@@ -144,5 +144,5 @@ AddToCartButton.addEventListener('click', addToCart);
     //     cart[idColor].quantity = parseInt(cart[idColor].quantity) + parseInt(item.idColor.quantity);
     //     localStorage.cart = JSON.stringify(cart)
 
-    //     return;+
+    //     return;
     // }

@@ -94,8 +94,8 @@ for (let item of cart) {
 
 
                 let totalPrice = document.getElementById('totalPrice');
-                let totalquantity = document.getElementById('totalquantity');
-                totalquantity.innerHTML = itemQuantity;
+                let totalQuantity = document.getElementById('totalQuantity');
+                totalQuantity.innerHTML = itemQuantity;
                 totalPrice.innerHTML = total;
 
 
@@ -108,7 +108,7 @@ for (let item of cart) {
 
 // Update total quantity and price and display it without reloading the page
 function updateValue(e) {
-    total = 1;
+    total = 0;
     itemQuantity = 0;
 
     for (let i = 0; i < cart.length; i++) {
@@ -123,8 +123,9 @@ function updateValue(e) {
         }
         
         // Update Localstorage data  according to on-screen data modifications
+        
         itemQuantity += parseInt(cart[i].quantity);
-        totalquantity.innerHTML = itemQuantity;
+        totalQuantity.innerHTML = itemQuantity;
 
         let url = `http://localhost:3000/api/products/${cart[i].id}`;
         fetch(url)
@@ -139,6 +140,8 @@ function updateValue(e) {
 
 
     }
+   
+ 
 
 }
 
