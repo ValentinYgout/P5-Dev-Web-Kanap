@@ -1,6 +1,6 @@
 
 
-// on prend les informations de l'api
+// gather data from api
 async function getProducts() {
     let url = 'http://localhost:3000/api/products';
     try {
@@ -10,37 +10,37 @@ async function getProducts() {
         console.log(error);
     }
 }
-// on crée les articles de façon dynamique, en incluant les données de l'api
+// dynamically create articles, with data from the api
+
 async function renderProducts() {
     let products = await getProducts();
     products.forEach(product => {
-        console.log(product.imageUrl)
+       
+        let items = document.getElementById('items');
+        let newLink = document.createElement("a");
+        let newArticle = document.createElement("article");
+        let newImage= document.createElement("img"); 
+        let newName = document.createElement("h3");
+        let newDescription = document.createElement("p");
 
-        let Items = document.getElementById('items');
-        let NewLink = document.createElement("a");
-        let NewArticle = document.createElement("article");
-        let NewImage= document.createElement("img"); 
-        let NewName = document.createElement("h3");
-        let NewDescription = document.createElement("p");
+        items.appendChild(newLink);
 
-        Items.appendChild(NewLink)
+        newLink.appendChild(newArticle);
 
-        NewLink.appendChild(NewArticle)
+        newArticle.appendChild(newImage);
+        newArticle.appendChild(newName);
+        newArticle.appendChild(newDescription);
 
-        NewArticle.appendChild(NewImage)
-        NewArticle.appendChild(NewName)
-        NewArticle.appendChild(NewDescription)
+        newLink.setAttribute("href", `./product.html?id=${product._id}`);
 
-        NewLink.setAttribute("href", `./product.html?id=${product._id}`)
+        newImage.setAttribute("src", `${product.imageUrl}`);
+        newImage.setAttribute("alt", `${product.altTxt}`);
 
-        NewImage.setAttribute("src", `${product.imageUrl}`)
-        NewImage.setAttribute("alt", `${product.altTxt}`)
+        newName.setAttribute("class", `productName`);
+        newName.innerHTML =`${product.name}`;
 
-        NewName.setAttribute("class", `productName`)
-        NewName.innerHTML =`${product.name}`
-
-        NewDescription.setAttribute("class", `productDescription`)
-        NewDescription.innerHTML =`${product.description}`
+        newDescription.setAttribute("class", `productDescription`);
+        newDescription.innerHTML =`${product.description}`;
         
         
     });

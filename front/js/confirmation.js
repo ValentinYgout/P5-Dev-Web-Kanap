@@ -1,4 +1,4 @@
-let paramName = "orderId"
+let paramName = "orderId";
 
 function getParamUrl(paramName){
 
@@ -7,9 +7,9 @@ function getParamUrl(paramName){
 }
 
 
-const orderId= getParamUrl(paramName)
+const orderId= getParamUrl(paramName);
 
 
-    console.log(orderId)
+    console.log(orderId);
     let orderElement = document.getElementById("orderId");
     orderElement.innerText = orderId;

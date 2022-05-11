@@ -1,8 +1,12 @@
 let cart = localStorage.getItem("cart");
 cart = JSON.parse(cart);
 
-let total = 0
-let itemQuantity = 0
+let total = 0;
+let itemQuantity = 0;
+
+
+// Render products from the cart,based on their ID in the cart, and with data from corresponding ID in the API
+
 for (let item of cart) {
     let url = `http://localhost:3000/api/products/${item.id}`;
     try {
@@ -11,89 +15,87 @@ for (let item of cart) {
                 return response.json()
             }).then(function (data) {
                 //    console.log(data)
-                let CartItems = document.getElementById('cart__items');
-                let NewCartItem = document.createElement("article");
-                CartItems.appendChild(NewCartItem)
-                NewCartItem.setAttribute("class", "cart__item")
-                NewCartItem.setAttribute("data-id", `${item.id}`)
-                NewCartItem.setAttribute("data-color", `${item.color}`)
+                let cartItems = document.getElementById('cart__items');
+                let newCartItem = document.createElement("article");
+                cartItems.appendChild(newCartItem)
+                newCartItem.setAttribute("class", "cart__item");
+                newCartItem.setAttribute("data-id", `${item.id}`);
+                newCartItem.setAttribute("data-color", `${item.color}`)
 
-                let NewDiv = document.createElement("div");
-                NewDiv.setAttribute("class", "cart__item__img")
-                NewCartItem.appendChild(NewDiv)
+                let itemImg = document.createElement("div");
+                itemImg.setAttribute("class", "cart__item__img");
+                newCartItem.appendChild(itemImg);
 
-                let NewCartItemImg = document.createElement("img")
-                NewCartItemImg.setAttribute("src", `${data.imageUrl}`)
-                NewCartItemImg.setAttribute("alt", `${data.altTxt}`)
-                NewDiv.appendChild(NewCartItemImg)
+                let newCartitemImg = document.createElement("img");
+                newCartitemImg.setAttribute("src", `${data.imageUrl}`);
+                newCartitemImg.setAttribute("alt", `${data.altTxt}`);
+                itemImg.appendChild(newCartitemImg);
 
-                let NewDiv2 = document.createElement("div");
-                NewDiv2.setAttribute("class", `cart__item__content`)
-                NewCartItem.appendChild(NewDiv2)
+                let content = document.createElement("div");
+                content.setAttribute("class", `cart__item__content`);
+                newCartItem.appendChild(content);
 
-                let NewDiv3 = document.createElement("div");
-                NewDiv3.setAttribute("class", `cart__item__content__description`)
-                NewDiv2.appendChild(NewDiv3)
+                let contentDescription = document.createElement("div");
+                contentDescription.setAttribute("class", `cart__item__content__description`);
+                content.appendChild(contentDescription);
 
-                let NewH2 = document.createElement("h2");
-                NewH2.innerHTML = `${data.name}`
-                NewDiv2.appendChild(NewH2)
+                let newH2 = document.createElement("h2");
+                newH2.innerHTML = `${data.name}`;
+                content.appendChild(newH2);
 
-                let NewP = document.createElement("p");
-                NewP.innerHTML = `${item.color}`
-                NewDiv2.appendChild(NewP)
+                let newP = document.createElement("p");
+                newP.innerHTML = `${item.color}`;
+                content.appendChild(newP);
 
-                let Newp2 = document.createElement("p");
-                Newp2.innerHTML = `${data.price} €`
-                NewDiv3.appendChild(Newp2)
+                let newP2 = document.createElement("p");
+                newP2.innerHTML = `${data.price} €`;
+                contentDescription.appendChild(newP2);
 
-                let NewDiv4 = document.createElement("div");
-                NewDiv4.setAttribute("class", `cart__item__content__settings`)
-                NewDiv2.appendChild(NewDiv4)
+                let contentsettings = document.createElement("div");
+                contentsettings.setAttribute("class", `cart__item__content__settings`);
+                content.appendChild(contentsettings);
 
-                let NewDiv5 = document.createElement("div");
-                NewDiv5.setAttribute("class", `cart__item__content__settings__quantity`)
-                NewDiv4.appendChild(NewDiv5)
-                let QuantityP = document.createElement("p");
-                QuantityP.innerHTML = `Qté`
-                NewDiv5.appendChild(QuantityP)
-                let QuantityInput = document.createElement("input");
-                QuantityInput.setAttribute("class", `itemQuantity`)
-                QuantityInput.setAttribute("type", `number`)
-                QuantityInput.setAttribute("name", `itemQuantity`)
-                QuantityInput.setAttribute("min", `1`)
-                QuantityInput.setAttribute("max", `100`)
-                QuantityInput.setAttribute("value", `${item.quantity}`)
-                NewDiv5.appendChild(QuantityInput)
-
-                let inputQuantity = document.querySelectorAll('.itemQuantity')
-                inputQuantity.forEach(inputQuantity => {
-                    inputQuantity.addEventListener('change', updateValue)
-                })
+                let contentsettingsquantity = document.createElement("div");
+                contentsettingsquantity.setAttribute("class", `cart__item__content__settings__quantity`);
+                contentsettings.appendChild(contentsettingsquantity);
+                let quantityP = document.createElement("p");
+                quantityP.innerHTML = `Qté`;
+                contentsettingsquantity.appendChild(quantityP);
+                let quantityInput = document.createElement("input");
+                quantityInput.setAttribute("class", `itemQuantity`);
+                quantityInput.setAttribute("type", `number`);
+                quantityInput.setAttribute("name", `itemQuantity`);
+                quantityInput.setAttribute("min", `1`);
+                quantityInput.setAttribute("max", `100`);
+                quantityInput.setAttribute("value", `${item.quantity}`);
+                contentsettingsquantity.appendChild(quantityInput);
 
 
-                let NewDiv6 = document.createElement("div");
-                NewDiv6.setAttribute("class", `cart__item__content__settings__delete`)
-                NewDiv4.appendChild(NewDiv6)
-                let RemoveP = document.createElement("p");
-                RemoveP.innerHTML = `Supprimer`
-                RemoveP.setAttribute("class", `deleteItem`)
-                NewDiv6.appendChild(RemoveP)
 
-                let deleteItem = document.querySelectorAll('.deleteItem')
-                deleteItem.forEach(deleteItem => {
-                    deleteItem.addEventListener('click', deleteProduct)
-
-                })
+                quantityInput.addEventListener('change', updateValue);
 
 
-                total += data.price * item.quantity
-                itemQuantity += parseInt(item.quantity)
 
-                // console.log(total, price*quantity)
-                let totalPrice = document.getElementById('totalPrice')
-                let totalQuantity = document.getElementById('totalQuantity')
-                totalQuantity.innerHTML = itemQuantity
+                let settingsDelete = document.createElement("div");
+                settingsDelete.setAttribute("class", `cart__item__content__settings__delete`);
+                contentsettings.appendChild(settingsDelete);
+                let removeP = document.createElement("p");
+                removeP.innerHTML = `Supprimer`;
+                removeP.setAttribute("class", `deleteItem`);
+                settingsDelete.appendChild(removeP);
+
+
+                settingsDelete.addEventListener('click', deleteProduct);
+
+                // calculate cart total quantity and price on page load
+
+                total += data.price * item.quantity;
+                itemQuantity += parseInt(item.quantity);
+
+
+                let totalPrice = document.getElementById('totalPrice');
+                let totalquantity = document.getElementById('totalquantity');
+                totalquantity.innerHTML = itemQuantity;
                 totalPrice.innerHTML = total;
 
 
@@ -104,30 +106,32 @@ for (let item of cart) {
 
 }
 
-
+// Update total quantity and price and display it without reloading the page
 function updateValue(e) {
-    console.log("test")
-    total = 1
-    itemQuantity = 0
+    total = 1;
+    itemQuantity = 0;
 
     for (let i = 0; i < cart.length; i++) {
-        let DataId = e.target.parentNode.parentNode.parentNode.parentNode.dataset.id
-        let DataColor = e.target.parentNode.parentNode.parentNode.parentNode.dataset.color
-        console.log(DataId + DataColor)
-        if (DataId + DataColor == cart[i].idColor) {
+        let data=e.target.parentNode.parentNode.parentNode.parentNode.dataset;
+        let dataId = data.id;
+        let dataColor = data.color;
+       
+
+        if (dataId + dataColor == cart[i].idColor) {
             cart[i].quantity = e.target.value;
-            localStorage.cart = JSON.stringify(cart)
+            localStorage.cart = JSON.stringify(cart);
         }
-        itemQuantity += parseInt(cart[i].quantity)
-        totalQuantity.innerHTML = itemQuantity
+        
+        // Update Localstorage data  according to on-screen data modifications
+        itemQuantity += parseInt(cart[i].quantity);
+        totalquantity.innerHTML = itemQuantity;
 
         let url = `http://localhost:3000/api/products/${cart[i].id}`;
         fetch(url)
             .then(function (response) {
-                return response.json()
+                return response.json();
             }).then(function (data) {
-                console.log(data.price)
-                total += data.price * cart[i].quantity
+                total += data.price * cart[i].quantity;
                 totalPrice.innerHTML = total;
 
             })
@@ -141,20 +145,18 @@ function updateValue(e) {
 
 
 
-
+// Delete product from display and localstorage and then calculate new quantity and price and update display with updateValue()
 function deleteProduct(e) {
-    console.log("test")
-
     for (let i = 0; i < cart.length; i++) {
-        console.log(cart[i].id, "and", e.target.parentNode.parentNode.parentNode.parentNode.dataset.color)
+
         if (cart[i].idColor === e.target.parentNode.parentNode.parentNode.parentNode.dataset.id + e.target.parentNode.parentNode.parentNode.parentNode.dataset.color) {
-            cart.splice(i, 1)
-            localStorage.cart = JSON.stringify(cart)
-            e.target.parentNode.parentNode.parentNode.parentNode.remove()
-            updateValue(e)
+            cart.splice(i, 1);
+            localStorage.cart = JSON.stringify(cart);
+            e.target.parentNode.parentNode.parentNode.parentNode.remove();
+            updateValue(e);
 
 
-            return
+            return;
 
         }
     }
@@ -164,24 +166,25 @@ function deleteProduct(e) {
 
 
 
-let CheckBeforeSending = false
-let lastNameResult = false
-let addressResult = false
-let cityResult = false
-let EmailResult = false
-let firstNameResult = false
-validateContactForm()
+let checkBeforeSending = false;
+let lastNameResult = false;
+let addressResult = false;
+let cityResult = false;
+let emailResult = false;
+let firstNameResult = false;
+validateContactForm();
 
+// data validation before sending form to backend
 function validateContactForm() {
 
 
     nameRegex = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._-\s]{1,50}$/;
     emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    addressRegex = /^[#.0-9a-zA-Z\s,-]+$/
+    addressRegex = /^[#.0-9a-zA-Z\s,-]+$/;
 
 
-    let firstName = document.getElementById('firstName')
-    let firstNameErrorMsg = document.getElementById('firstNameErrorMsg')
+    let firstName = document.getElementById('firstName');
+    let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
 
     firstName.addEventListener('input', (event) => {
         let firstNameValue = event.target.value;
@@ -190,7 +193,7 @@ function validateContactForm() {
 
             firstNameResult = true;
             firstNameErrorMsg.innerHTML = "";
-            OrderJson.contact.firstName = firstNameValue
+            orderJson.contact.firstName = firstNameValue;
 
 
 
@@ -209,8 +212,8 @@ function validateContactForm() {
 
 
 
-    let lastName = document.getElementById('lastName')
-    let lastNameErrorMsg = document.getElementById('lastNameErrorMsg')
+    let lastName = document.getElementById('lastName');
+    let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
 
     lastName.addEventListener('input', (event) => {
         LastNameValue = event.target.value;
@@ -218,18 +221,18 @@ function validateContactForm() {
         if (nameRegex.test(LastNameValue)) {
             lastNameErrorMsg.innerHTML = "";
             lastNameResult = true;
-            OrderJson.contact.lastName = LastNameValue
+            orderJson.contact.lastName = LastNameValue;
 
         } else if (LastNameValue === "") {
             lastNameErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
             lastNameResult = false;
         } else {
             lastNameErrorMsg.innerHTML = "Le format du nom n'est pas correct";
-            lastNameResult = false
+            lastNameResult = false;
         }
     });
-    let address = document.getElementById('address')
-    let addressErrorMsg = document.getElementById('addressErrorMsg')
+    let address = document.getElementById('address');
+    let addressErrorMsg = document.getElementById('addressErrorMsg');
 
     address.addEventListener('input', (event) => {
 
@@ -237,7 +240,7 @@ function validateContactForm() {
         if (addressRegex.test(addressValue)) {
             addressErrorMsg.innerHTML = "";
             addressResult = true;
-            OrderJson.contact.address = addressValue
+            orderJson.contact.address = addressValue;
         } else if (address.value === "") {
             addressErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
             addressResult = false;
@@ -246,15 +249,15 @@ function validateContactForm() {
             addressResult = false;
         }
     });
-    let city = document.getElementById('city')
-    let cityErrorMsg = document.getElementById('cityErrorMsg')
+    let city = document.getElementById('city');
+    let cityErrorMsg = document.getElementById('cityErrorMsg');
 
     city.addEventListener('input', (event) => {
         cityValue = event.target.value;
         if (nameRegex.test(cityValue)) {
             cityErrorMsg.innerHTML = "";
             cityResult = true;
-            OrderJson.contact.city = cityValue
+            orderJson.contact.city = cityValue;
         } else if (city.value === "") {
             cityErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
             cityResult = false;
@@ -264,8 +267,8 @@ function validateContactForm() {
             cityResult = false;
         }
     });
-    let email = document.getElementById('email')
-    let emailErrorMsg = document.getElementById('emailErrorMsg')
+    let email = document.getElementById('email');
+    let emailErrorMsg = document.getElementById('emailErrorMsg');
 
     email.addEventListener('input', (event) => {
 
@@ -274,45 +277,48 @@ function validateContactForm() {
         if (emailRegex.test(emailValue)) {
 
             emailErrorMsg.innerHTML = "";
-            EmailResult = true;
-            OrderJson.contact.email = emailValue
+            emailResult = true;
+            orderJson.contact.email = emailValue;
         } else if (email.value === "") {
             emailErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
-            EmailResult = false;
+            emailResult = false;
         } else {
             emailErrorMsg.innerHTML = "Le format de l'email n'est pas correct";
-            EmailResult = false;
+            emailResult = false;
         }
     });
 
-    CheckBeforeSending = firstNameResult && lastNameResult && addressResult && cityResult && EmailResult
+    checkBeforeSending = firstNameResult && lastNameResult && addressResult && cityResult && emailResult;
+
+    // If all inputs pass the regex check, checkBeforeSending variable will return true, else it will return false
 
     console.log(
         firstNameResult, 'firstNameResult',
         lastNameResult, 'lastNameResult',
         addressResult, 'addressResult',
         cityResult, 'cityResult',
-        EmailResult, 'EmailResult',
+        emailResult, 'emailResult',
 
     )
 
-    return CheckBeforeSending;
+    return checkBeforeSending;
 
 }
 
-
+//  if the cart is empty, prevent sending data to backend
+// if cart contains products, send their IDs to orderJson variable, under the products array.
 function validateCart(cart) {
     if (cart.length == 0) {
         return false;
     }
     for (let i = 0; i < cart.length; i++) {
-        OrderJson.products.push(cart[i].id)
+        orderJson.products.push(cart[i].id);
     }
     return true;
 
 }
 
-let OrderJson = {
+let orderJson = {
     contact: {
         firstName: "",
         lastName: "",
@@ -323,15 +329,15 @@ let OrderJson = {
     products: [],
 }
 
+// Send data to backend 
 function sendOrder() {
-    console.log(OrderJson)
     fetch("http://localhost:3000/api/products/order", {
             method: "POST",
             headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json",
+                "content-Type": "application/json",
             },
-            body: JSON.stringify(OrderJson),
+            body: JSON.stringify(orderJson),
         })
         .then(function (res) {
             if (res.ok) {
@@ -339,8 +345,8 @@ function sendOrder() {
             }
         })
         .then(function (value) {
-            console.log(value);
-            window.location = 'confirmation.html?orderId=' + value.orderId; //redirection vers la page confirmation en passant l'orderID dans l'URL de la page
+            window.location = 'confirmation.html?orderId=' + value.orderId;
+            // if the backend succesfully receives proper data, obtain order ID from backend and then open confirmation page, which contains order ID in its URL for further display.
         })
 
 
@@ -350,7 +356,7 @@ function sendOrder() {
         });
 
 }
-
+//allow sending data to backend if both form and cart match previously mentioned requirements and format to be read by backend
 function submit() {
     let submit = document.getElementById("order");
     submit.addEventListener("click", function (e) {
@@ -358,14 +364,12 @@ function submit() {
 
 
 
-        let validateData = validateContactForm() && validateCart(cart)
-        if (validateData) {
-            console.log('ready to send')
-
+        let validatedata = validateContactForm() && validateCart(cart);
+        if (validatedata) {
+            
             sendOrder()
-
         } else {
-            console.log('form is not properly filled')
+            alert('form is not properly filled, or cart is empty');
         }
 
 
