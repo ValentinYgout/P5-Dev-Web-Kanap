@@ -1,15 +1,20 @@
-let paramName = "orderId";
 
-function getParamUrl(paramName){
 
-    const id = new URL(window.location.href).searchParams.get(paramName);
-    return id
+let paramName = "orderId"
+const orderId= getParamUrl(paramName)
+let orderElement = document.getElementById("orderId")
+if (orderId== null||undefined){
+//////////////////// error 404
+error= document.querySelector('.confirmation')
+while (error.firstChild) {
+    error.removeChild(error.lastChild)
+  }
+  error.innerText='ERROR 404'
+}
+else{
+    console.log(orderId)
+    orderElement.innerText = orderId
 }
 
-
-const orderId= getParamUrl(paramName);
-
-
-    console.log(orderId);
-    let orderElement = document.getElementById("orderId");
-    orderElement.innerText = orderId;
+   
+   

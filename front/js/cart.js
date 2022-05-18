@@ -1,325 +1,397 @@
-let cart = localStorage.getItem("cart");
-cart = JSON.parse(cart);
+function getCart(item = "cart") {
 
-let total = 0;
-let itemQuantity = 0;
-
-
-// Render products from the cart,based on their ID in the cart, and with data from corresponding ID in the API
-
-for (let item of cart) {
-    let url = `http://localhost:3000/api/products/${item.id}`;
-    try {
-        fetch(url)
-            .then(function (response) {
-                return response.json()
-            }).then(function (data) {
-                //    console.log(data)
-                let cartItems = document.getElementById('cart__items');
-                let newCartItem = document.createElement("article");
-                cartItems.appendChild(newCartItem)
-                newCartItem.setAttribute("class", "cart__item");
-                newCartItem.setAttribute("data-id", `${item.id}`);
-                newCartItem.setAttribute("data-color", `${item.color}`)
-
-                let itemImg = document.createElement("div");
-                itemImg.setAttribute("class", "cart__item__img");
-                newCartItem.appendChild(itemImg);
-
-                let newCartitemImg = document.createElement("img");
-                newCartitemImg.setAttribute("src", `${data.imageUrl}`);
-                newCartitemImg.setAttribute("alt", `${data.altTxt}`);
-                itemImg.appendChild(newCartitemImg);
-
-                let content = document.createElement("div");
-                content.setAttribute("class", `cart__item__content`);
-                newCartItem.appendChild(content);
-
-                let contentDescription = document.createElement("div");
-                contentDescription.setAttribute("class", `cart__item__content__description`);
-                content.appendChild(contentDescription);
-
-                let newH2 = document.createElement("h2");
-                newH2.innerHTML = `${data.name}`;
-                content.appendChild(newH2);
-
-                let newP = document.createElement("p");
-                newP.innerHTML = `${item.color}`;
-                content.appendChild(newP);
-
-                let newP2 = document.createElement("p");
-                newP2.innerHTML = `${data.price} €`;
-                contentDescription.appendChild(newP2);
-
-                let contentsettings = document.createElement("div");
-                contentsettings.setAttribute("class", `cart__item__content__settings`);
-                content.appendChild(contentsettings);
-
-                let contentsettingsquantity = document.createElement("div");
-                contentsettingsquantity.setAttribute("class", `cart__item__content__settings__quantity`);
-                contentsettings.appendChild(contentsettingsquantity);
-                let quantityP = document.createElement("p");
-                quantityP.innerHTML = `Qté`;
-                contentsettingsquantity.appendChild(quantityP);
-                let quantityInput = document.createElement("input");
-                quantityInput.setAttribute("class", `itemQuantity`);
-                quantityInput.setAttribute("type", `number`);
-                quantityInput.setAttribute("name", `itemQuantity`);
-                quantityInput.setAttribute("min", `1`);
-                quantityInput.setAttribute("max", `100`);
-                quantityInput.setAttribute("value", `${item.quantity}`);
-                contentsettingsquantity.appendChild(quantityInput);
-
-
-
-                quantityInput.addEventListener('change', updateValue);
-
-
-
-                let settingsDelete = document.createElement("div");
-                settingsDelete.setAttribute("class", `cart__item__content__settings__delete`);
-                contentsettings.appendChild(settingsDelete);
-                let removeP = document.createElement("p");
-                removeP.innerHTML = `Supprimer`;
-                removeP.setAttribute("class", `deleteItem`);
-                settingsDelete.appendChild(removeP);
-
-
-                settingsDelete.addEventListener('click', deleteProduct);
-
-                // calculate cart total quantity and price on page load
-
-                total += data.price * item.quantity;
-                itemQuantity += parseInt(item.quantity);
-
-
-                let totalPrice = document.getElementById('totalPrice');
-                let totalQuantity = document.getElementById('totalQuantity');
-                totalQuantity.innerHTML = itemQuantity;
-                totalPrice.innerHTML = total;
-
-
-            })
-    } catch (error) {
-        console.log(error);
-    }
-
+    let cart = localStorage.getItem(item)
+    cart = JSON.parse(cart)
+    return cart
 }
 
-// Update total quantity and price and display it without reloading the page
-function updateValue(e) {
-    total = 0;
-    itemQuantity = 0;
+let cart = getCart()
+let total = 0
+let itemQuantity = 0
+let fetchedCartData = []
 
-    for (let i = 0; i < cart.length; i++) {
-        let data=e.target.parentNode.parentNode.parentNode.parentNode.dataset;
-        let dataId = data.id;
-        let dataColor = data.color;
-       
+// function renderCart(){
 
-        if (dataId + dataColor == cart[i].idColor) {
-            cart[i].quantity = e.target.value;
-            localStorage.cart = JSON.stringify(cart);
+//     for (let item of cart) {
+//         let url = `http://localhost:3000/api/products/${item.id}`;
+//         try {
+//             fetch(url)
+//                 .then(function (response) {
+//                     return response.json()
+//                 }).then(function (data) {
+//                     console.log(data)
+
+//                 })
+//         } catch (error) {
+//             console.log(error);
+//         }
+
+//     }
+// }
+// renderCart()
+
+//Render products from the cart,based on their ID in the cart, and with data from corresponding ID in the API
+function renderCart() {
+
+    for (let item of cart) {
+        let url = `http://localhost:3000/api/products/${item.id}`
+        try {
+            fetch(url)
+                .then(function (response) {
+                    return response.json()
+                }).then(function (data) {
+                    //    console.log(data)
+                    let cartItems = document.getElementById('cart__items')
+                    let newCartItem = document.createElement("article")
+                    cartItems.appendChild(newCartItem)
+                    newCartItem.setAttribute("class", "cart__item")
+                    newCartItem.setAttribute("data-id", `${item.id}`)
+                    newCartItem.setAttribute("data-color", `${item.color}`)
+
+                    let itemImg = document.createElement("div")
+                    itemImg.setAttribute("class", "cart__item__img")
+                    newCartItem.appendChild(itemImg)
+
+                    let newCartitemImg = document.createElement("img")
+                    newCartitemImg.setAttribute("src", `${data.imageUrl}`)
+                    newCartitemImg.setAttribute("alt", `${data.altTxt}`)
+                    itemImg.appendChild(newCartitemImg)
+
+                    let content = document.createElement("div")
+                    content.setAttribute("class", `cart__item__content`)
+                    newCartItem.appendChild(content)
+
+                    let contentDescription = document.createElement("div")
+                    contentDescription.setAttribute("class", `cart__item__content__description`)
+                    content.appendChild(contentDescription)
+
+                    let newH2 = document.createElement("h2")
+                    newH2.innerHTML = `${data.name}`
+                    content.appendChild(newH2)
+
+                    let newP = document.createElement("p")
+                    newP.innerHTML = `${item.color}`
+                    content.appendChild(newP)
+
+                    let newP2 = document.createElement("p")
+                    newP2.innerHTML = `${data.price} €`
+                    contentDescription.appendChild(newP2)
+
+                    let contentsettings = document.createElement("div")
+                    contentsettings.setAttribute("class", `cart__item__content__settings`)
+                    content.appendChild(contentsettings)
+
+                    let contentsettingsquantity = document.createElement("div")
+                    contentsettingsquantity.setAttribute("class", `cart__item__content__settings__quantity`)
+                    contentsettings.appendChild(contentsettingsquantity)
+                    let quantityP = document.createElement("p")
+                    quantityP.innerHTML = `Qté`
+                    contentsettingsquantity.appendChild(quantityP)
+                    let quantityInput = document.createElement("input")
+                    quantityInput.setAttribute("class", `itemQuantity`)
+                    quantityInput.setAttribute("type", `number`)
+                    quantityInput.setAttribute("name", `itemQuantity`)
+                    quantityInput.setAttribute("min", `1`)
+                    quantityInput.setAttribute("max", `100`)
+                    quantityInput.setAttribute("value", `${item.quantity}`)
+                    contentsettingsquantity.appendChild(quantityInput)
+
+
+
+                    fetchedCartData.push(data)
+                    quantityInput.addEventListener('change', function (e) {
+                        total = 0
+                        itemQuantity = 0
+
+                        for (let i = 0; i < cart.length; i++) {
+
+                            let data = e.target.parentNode.parentNode.parentNode.parentNode.dataset
+                            let dataId = data.id
+                            let dataColor = data.color
+
+                            // Update Localstorage data  according to on-screen data modifications
+                            if (dataId + dataColor == cart[i].idColor) {
+                                cart[i].quantity = e.target.value
+                                localStorage.setItem('cart', JSON.stringify(cart))
+                            }
+
+
+
+
+
+                        }
+                        //update total quantity and price displays after modifying the quantity of a product
+                        calcQty()
+                        calcPrice()
+
+                    })
+                    console.log(fetchedCartData)
+
+
+
+
+                    let settingsDelete = document.createElement("div")
+                    settingsDelete.setAttribute("class", `cart__item__content__settings__delete`)
+                    contentsettings.appendChild(settingsDelete)
+                    let removeP = document.createElement("p")
+                    removeP.innerHTML = `Supprimer`
+                    removeP.setAttribute("class", `deleteItem`)
+                    settingsDelete.appendChild(removeP)
+
+
+                    settingsDelete.addEventListener('click', function (e) {
+                        total = 0
+                        itemQuantity = 0
+
+                        for (let i = 0; i < cart.length; i++) {
+
+                            if (cart[i].idColor === e.target.parentNode.parentNode.parentNode.parentNode.dataset.id + e.target.parentNode.parentNode.parentNode.parentNode.dataset.color) {
+                                cart.splice(i, 1)
+                                localStorage.setItem('cart', JSON.stringify(cart))
+                                e.target.parentNode.parentNode.parentNode.parentNode.remove()
+                            }
+
+
+
+
+                        }
+                        //update total quantity and price displays after deleting a product from the cart
+                        calcQty()
+                        calcPrice()
+                    })
+
+
+                    // calculate cart total quantity and price on page load
+
+                    total += data.price * item.quantity
+                    itemQuantity += parseInt(item.quantity)
+
+
+
+                    let totalPrice = document.getElementById('totalPrice')
+                    let totalQuantity = document.getElementById('totalQuantity')
+                    totalQuantity.innerHTML = itemQuantity
+                    totalPrice.innerHTML = total
+
+
+                })
+        } catch (error) {
+            console.log(error)
         }
-        
-        // Update Localstorage data  according to on-screen data modifications
-        
-        itemQuantity += parseInt(cart[i].quantity);
-        totalQuantity.innerHTML = itemQuantity;
-
-        let url = `http://localhost:3000/api/products/${cart[i].id}`;
-        fetch(url)
-            .then(function (response) {
-                return response.json();
-            }).then(function (data) {
-                total += data.price * cart[i].quantity;
-                totalPrice.innerHTML = total;
-
-            })
-
-
 
     }
-   
- 
-
 }
+renderCart()
 
-
-
-
-// Delete product from display and localstorage and then calculate new quantity and price and update display with updateValue()
-function deleteProduct(e) {
+function calcQty() {
     for (let i = 0; i < cart.length; i++) {
+        if (cart[i] !== undefined) {
 
-        if (cart[i].idColor === e.target.parentNode.parentNode.parentNode.parentNode.dataset.id + e.target.parentNode.parentNode.parentNode.parentNode.dataset.color) {
-            cart.splice(i, 1);
-            localStorage.cart = JSON.stringify(cart);
-            e.target.parentNode.parentNode.parentNode.parentNode.remove();
-            updateValue(e);
-
-
-            return;
-
+            itemQuantity += parseInt(cart[i].quantity)
+            totalQuantity.innerHTML = itemQuantity
         }
     }
 }
 
+function calcPrice() {
+    for (let i = 0; i < cart.length; i++) {
+        if (cart[i] !== undefined) {
+
+            let indexForPrice = fetchedCartData.findIndex(x => x._id === cart[i].id)
+            console.log(indexForPrice)
+            total += fetchedCartData[indexForPrice].price * cart[i].quantity
+            totalPrice.innerHTML = total
+        }
+    }
+}
+//Update total quantity and price and display it without reloading the page
+// function updateValue(e) {
+//     total = 0;
+//     itemQuantity = 0;
+
+//     for (let i = 0; i < cart.length; i++) {
+
+//         let data = e.target.parentNode.parentNode.parentNode.parentNode.dataset;
+//         let dataId = data.id;
+//         let dataColor = data.color;
+
+//         if (dataId + dataColor == cart[i].idColor) {
+//             cart[i].quantity = e.target.value;
+//             localStorage.setItem('cart', JSON.stringify(cart));
+//         }
+
+//         // Update Localstorage data  according to on-screen data modifications
+
+//         itemQuantity += parseInt(cart[i].quantity);
+//         totalQuantity.innerHTML = itemQuantity;
+
+//         let url = `http://localhost:3000/api/products/${cart[i].id}`;
+//         fetch(url)
+//             .then(function (response) {
+//                 return response.json();
+//             }).then(function (data) {
+//                 total += data.price * cart[i].quantity;
+//                 totalPrice.innerHTML = total;
+
+//             })
+
+
+
+//     }
+
+
+
+// }
 
 
 
 
-let checkBeforeSending = false;
-let lastNameResult = false;
-let addressResult = false;
-let cityResult = false;
-let emailResult = false;
-let firstNameResult = false;
-validateContactForm();
+// // Delete product from display and localstorage and then calculate new quantity and price and update display with updateValue()
+// function deleteProduct(e) {
+//     for (let i = 0; i < cart.length; i++) {
+
+//         if (cart[i].idColor === e.target.parentNode.parentNode.parentNode.parentNode.dataset.id + e.target.parentNode.parentNode.parentNode.parentNode.dataset.color) {
+//             cart.splice(i, 1);
+//             localStorage.setItem('cart', JSON.stringify(cart));
+//             e.target.parentNode.parentNode.parentNode.parentNode.remove();
+//             updateValue(e);
+
+
+//             return;
+
+//         }
+//     }
+// }
+
+
+
+function validateElement(regex, element, key, elementErrorMsg) {
+    console.log(orderJson)
+    if (regex.test(element)) {
+
+        elementResult = true
+        elementErrorMsg.innerHTML = ""
+        orderJson.contact[key] = element
+        return true
+
+
+
+    } else if (element === "") {
+        elementErrorMsg.innerHTML = "Ce champ ne peut pas être vide."
+        elementResult = false
+        return false
+
+
+    } else {
+        elementErrorMsg.innerHTML = "le format n'est pas correct"
+        elementResult = false
+        return false
+
+    }
+
+}
+
+let checkBeforeSending = false
+let lastNameResult = false
+let addressResult = false
+let cityResult = false
+let emailResult = false
+let firstNameResult = false
+
 
 // data validation before sending form to backend
-function validateContactForm() {
-
-
-    nameRegex = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._-\s]{1,50}$/;
-    emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    addressRegex = /^[#.0-9a-zA-Z\s,-]+$/;
-
-
-    let firstName = document.getElementById('firstName');
-    let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
-
-    firstName.addEventListener('input', (event) => {
-        let firstNameValue = event.target.value;
-
-        if (nameRegex.test(firstNameValue)) {
-
-            firstNameResult = true;
-            firstNameErrorMsg.innerHTML = "";
-            orderJson.contact.firstName = firstNameValue;
 
 
 
-        } else if (firstNameValue === "") {
-            firstNameErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
-            firstNameResult = false;
-
-
-        } else {
-            firstNameErrorMsg.innerHTML = "le format du prénom n'est pas correct";
-            firstNameResult = false;
-
-        }
-    });
+nameRegex = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._-\s]{1,50}$/
+emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+addressRegex = /^[#.0-9a-zA-Z\s,-]+$/
 
 
 
 
-    let lastName = document.getElementById('lastName');
-    let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
 
-    lastName.addEventListener('input', (event) => {
-        LastNameValue = event.target.value;
+let firstName = document.getElementById('firstName')
+let firstNameErrorMsg = document.getElementById('firstNameErrorMsg')
+firstName.addEventListener('input', (event) => {
+    let firstNameValue = event.target.value
+    let key = 'firstName'
+    firstNameResult = validateElement(nameRegex, firstNameValue, key, firstNameErrorMsg)
+})
 
-        if (nameRegex.test(LastNameValue)) {
-            lastNameErrorMsg.innerHTML = "";
-            lastNameResult = true;
-            orderJson.contact.lastName = LastNameValue;
 
-        } else if (LastNameValue === "") {
-            lastNameErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
-            lastNameResult = false;
-        } else {
-            lastNameErrorMsg.innerHTML = "Le format du nom n'est pas correct";
-            lastNameResult = false;
-        }
-    });
-    let address = document.getElementById('address');
-    let addressErrorMsg = document.getElementById('addressErrorMsg');
 
-    address.addEventListener('input', (event) => {
 
-        addressValue = event.target.value;
-        if (addressRegex.test(addressValue)) {
-            addressErrorMsg.innerHTML = "";
-            addressResult = true;
-            orderJson.contact.address = addressValue;
-        } else if (address.value === "") {
-            addressErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
-            addressResult = false;
-        } else {
-            addressErrorMsg.innerHTML = "Le format de l'addresse n'est pas correct";
-            addressResult = false;
-        }
-    });
-    let city = document.getElementById('city');
-    let cityErrorMsg = document.getElementById('cityErrorMsg');
+let lastName = document.getElementById('lastName')
+let lastNameErrorMsg = document.getElementById('lastNameErrorMsg')
 
-    city.addEventListener('input', (event) => {
-        cityValue = event.target.value;
-        if (nameRegex.test(cityValue)) {
-            cityErrorMsg.innerHTML = "";
-            cityResult = true;
-            orderJson.contact.city = cityValue;
-        } else if (city.value === "") {
-            cityErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
-            cityResult = false;
+lastName.addEventListener('input', (event) => {
+    LastNameValue = event.target.value
+    let key = 'lastName'
+    lastNameResult = validateElement(nameRegex, LastNameValue, key, lastNameErrorMsg)
+})
 
-        } else {
-            cityErrorMsg.innerHTML = "Le format de la ville n'est pas correct";
-            cityResult = false;
-        }
-    });
-    let email = document.getElementById('email');
-    let emailErrorMsg = document.getElementById('emailErrorMsg');
 
-    email.addEventListener('input', (event) => {
+let address = document.getElementById('address')
+let addressErrorMsg = document.getElementById('addressErrorMsg')
+address.addEventListener('input', (event) => {
+    addressValue = event.target.value
+    let key = 'address'
+    addressResult = validateElement(addressRegex, addressValue, key, addressErrorMsg)
+})
 
-        emailValue = event.target.value;
+let city = document.getElementById('city')
+let cityErrorMsg = document.getElementById('cityErrorMsg')
+city.addEventListener('input', (event) => {
+    cityValue = event.target.value
+    let key = 'city'
+    cityResult = validateElement(nameRegex, cityValue, key, cityErrorMsg)
 
-        if (emailRegex.test(emailValue)) {
+})
+let email = document.getElementById('email')
+let emailErrorMsg = document.getElementById('emailErrorMsg')
 
-            emailErrorMsg.innerHTML = "";
-            emailResult = true;
-            orderJson.contact.email = emailValue;
-        } else if (email.value === "") {
-            emailErrorMsg.innerHTML = "Ce champ ne peut pas être vide.";
-            emailResult = false;
-        } else {
-            emailErrorMsg.innerHTML = "Le format de l'email n'est pas correct";
-            emailResult = false;
-        }
-    });
+email.addEventListener('input', (event) => {
 
-    checkBeforeSending = firstNameResult && lastNameResult && addressResult && cityResult && emailResult;
+    emailValue = event.target.value
+    let key = 'email'
+    emailResult = validateElement(emailRegex, emailValue, key, emailErrorMsg)
 
-    // If all inputs pass the regex check, checkBeforeSending variable will return true, else it will return false
+})
 
-    console.log(
-        firstNameResult, 'firstNameResult',
-        lastNameResult, 'lastNameResult',
-        addressResult, 'addressResult',
-        cityResult, 'cityResult',
-        emailResult, 'emailResult',
 
-    )
 
-    return checkBeforeSending;
+// If all inputs pass the regex check, checkBeforeSending variable will return true, else it will return false
 
-}
+// console.log(
+//     firstNameResult, 'firstNameResult',
+//     lastNameResult, 'lastNameResult',
+//     addressResult, 'addressResult',
+//     cityResult, 'cityResult',
+//     emailResult, 'emailResult',
+
+// )
+
+// return checkBeforeSending;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //  if the cart is empty, prevent sending data to backend
 // if cart contains products, send their IDs to orderJson variable, under the products array.
 function validateCart(cart) {
     if (cart.length == 0) {
-        return false;
+        alert('votre panier est vide')
+        return false
     }
     for (let i = 0; i < cart.length; i++) {
-        orderJson.products.push(cart[i].id);
+        orderJson.products.push(cart[i].id)
     }
-    return true;
+    return true
 
 }
+
 
 let orderJson = {
     contact: {
@@ -331,6 +403,13 @@ let orderJson = {
     },
     products: [],
 }
+
+
+function validateContactForm() {
+    checkBeforeSending = firstNameResult && lastNameResult && addressResult && cityResult && emailResult
+    return checkBeforeSending
+}
+
 
 // Send data to backend 
 function sendOrder() {
@@ -344,38 +423,36 @@ function sendOrder() {
         })
         .then(function (res) {
             if (res.ok) {
-                return res.json();
+                return res.json()
             }
         })
         .then(function (value) {
-            window.location = 'confirmation.html?orderId=' + value.orderId;
+            window.location = 'confirmation.html?orderId=' + value.orderId
             // if the backend succesfully receives proper data, obtain order ID from backend and then open confirmation page, which contains order ID in its URL for further display.
         })
 
 
         //Making a catch to display an error if something went wrong
         .catch(function (err) {
-            console.log(err);
-        });
+            console.log(err)
+        })
 
 }
 //allow sending data to backend if both form and cart match previously mentioned requirements and format to be read by backend
-function submit() {
-    let submit = document.getElementById("order");
-    submit.addEventListener("click", function (e) {
-        e.preventDefault();
+
+let form = document.querySelector('form')
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault()
 
 
+    let validatedata = validateContactForm() && validateCart(cart)
+    if (validatedata) {
 
-        let validatedata = validateContactForm() && validateCart(cart);
-        if (validatedata) {
-            
-            sendOrder()
-        } else {
-            alert('form is not properly filled, or cart is empty');
-        }
+        sendOrder()
+    } else {
+        alert('form is not properly filled, or cart is empty')
+    }
 
 
-    });
-}
-submit();
+})

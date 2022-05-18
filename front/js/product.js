@@ -1,16 +1,5 @@
 
-
-//get product id from the URL
-function getParamUrl(paramName) {
-    
-    const value = new URL(window.location.href).searchParams.get(paramName);
-    return value;
-}
-const id = getParamUrl("id");
-
-
-
-
+const id = getParamUrl(paramName = "id");
 
 // gather product data from api, based on ID from getParamURL()
 async function getProduct(id) {
@@ -18,18 +7,19 @@ async function getProduct(id) {
     console.log(url)
     try {
         let res = await fetch(url);
-        return  res.json();
+        return res.json();
     } catch (err) {
         console.log(error);
     }
 }
 // dynamically render product data  from getProduct()
 async function renderProduct() {
-    
-   
+
+
     let product = await getProduct(id);
 
-    let img =document.querySelector("body > main > div > section > article > div.item__img > img");
+
+    let img = document.querySelector("body > main > div > section > article > div.item__img > img");
     img.src = product.imageUrl;
     img.alt = product.altTxt;
 
@@ -41,14 +31,14 @@ async function renderProduct() {
     description.innerHTML = product.description;
 
 
-    let Colors = document.getElementById('colors');
+    let colors = document.getElementById('colors');
     // let optionReset = document.querySelector("#colors > option")
-    // Colors.removeChild(optionReset)
+    // colors.removeChild(optionReset)
     for (let i = 0; i < product.colors.length; i++) {
         let option = new Option(product.colors[i], product.colors[i]);
 
 
-        Colors.appendChild(option);
+        colors.appendChild(option);
 
 
     }
@@ -59,34 +49,28 @@ async function renderProduct() {
 renderProduct();
 
 
- 
-function getCart(){
-    try{
-        if (localStorage.getItem('cart') == null) { //Create a cart if one doesn't already exist.
-            localStorage.setItem('cart', '[]');
-        }
 
-        let cart = JSON.parse(localStorage.getItem('cart')); // parse the Localstorage string data into JSON
-        return cart
 
-    }
-    catch (error) {
-        console.log(error);
-    }
 
+function getCart(item="cart"){
+
+    let cart = localStorage.getItem(item);
+    cart = JSON.parse(cart);
+    return cart
 }
+    
 
 function addToCart() {
-   
 
-   // cart variable  contains JSON cart from getCart()
-    let cart=getCart();
+
+    // cart variable  contains JSON cart from getCart()
+    let cart = getCart();
 
     let quantity = document.getElementById('quantity').value;
     let color = document.getElementById('colors').value;
-    if (quantity > 0 && color !=='') { // IF QUANTITY AND COLOR ARE CORRECTLY SELECTED
-       
-       
+    if (quantity > 0 && color !== '') { // IF QUANTITY AND COLOR ARE CORRECTLY SELECTED
+
+
         let item = {
 
             idColor: id + color,
@@ -107,13 +91,12 @@ function addToCart() {
         }
 
         cart.push(item);
-         //Send  form data from item variable to cart variable from Localstorage
-         //Convert JSON data back to a string and update data in Localstorage
-        
+        //Send  form data from item variable to cart variable from Localstorage
+        //Convert JSON data back to a string and update data in Localstorage
+
         localStorage.setItem('cart', JSON.stringify(cart));
         alert("Votre article a bien été ajouté à votre panier");
-    }
-    else{// IF QUANTITY AND COLOR ARE NOT CORRECTLY SELECTED
+    } else { // IF QUANTITY AND COLOR ARE NOT CORRECTLY SELECTED
         alert("quantité ou couleur incorrectement selectionnées, veuillez corriger");
     }
 
@@ -122,27 +105,5 @@ function addToCart() {
 
 }
 
-let AddToCartButton = document.getElementById('addToCart');
-AddToCartButton.addEventListener('click', addToCart);
-
-
-
-// let item = {
-
-
-//     [idColor]: {
-
-//         id: id,
-//         quantity: quantity,
-//         color: color
-//     }
-// }
-
-
-    // if (cart[idColor] === item.idColor) {
-
-    //     cart[idColor].quantity = parseInt(cart[idColor].quantity) + parseInt(item.idColor.quantity);
-    //     localStorage.cart = JSON.stringify(cart)
-
-    //     return;
-    // }
+let addToCartButton = document.getElementById('addToCart');
+addToCartButton.addEventListener('click', addToCart);
