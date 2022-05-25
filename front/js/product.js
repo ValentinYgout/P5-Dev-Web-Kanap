@@ -1,4 +1,3 @@
-
 const id = getParamUrl(paramName = "id");
 
 // gather product data from api, based on ID from getParamURL()
@@ -15,11 +14,9 @@ async function getProduct(id) {
 // dynamically render product data  from getProduct()
 async function renderProduct() {
 
-
     let product = await getProduct(id);
+    let img = document.querySelector("article img");
 
-
-    let img = document.querySelector("body > main > div > section > article > div.item__img > img");
     img.src = product.imageUrl;
     img.alt = product.altTxt;
 
@@ -36,40 +33,24 @@ async function renderProduct() {
     // colors.removeChild(optionReset)
     for (let i = 0; i < product.colors.length; i++) {
         let option = new Option(product.colors[i], product.colors[i]);
-
-
         colors.appendChild(option);
-
-
     }
-
-
-
 }
 renderProduct();
 
-
-
-
-
-function getCart(item="cart"){
+function getCart(item = "cart") {
 
     let cart = localStorage.getItem(item);
     cart = JSON.parse(cart);
-    return cart
+    return cart;
 }
-    
 
 function addToCart() {
-
-
     // cart variable  contains JSON cart from getCart()
     let cart = getCart();
-
     let quantity = document.getElementById('quantity').value;
     let color = document.getElementById('colors').value;
     if (quantity > 0 && color !== '') { // IF QUANTITY AND COLOR ARE CORRECTLY SELECTED
-
 
         let item = {
 
@@ -82,27 +63,19 @@ function addToCart() {
 
         for (let i in cart) {
             if (cart[i].idColor == item.idColor) { // If product already exists in cart, increase quantity.
-
                 cart[i].quantity = parseInt(cart[i].quantity) + parseInt(item.quantity);
                 localStorage.cart = JSON.stringify(cart);
-
                 return;
             }
         }
-
         cart.push(item);
         //Send  form data from item variable to cart variable from Localstorage
         //Convert JSON data back to a string and update data in Localstorage
-
         localStorage.setItem('cart', JSON.stringify(cart));
         alert("Votre article a bien été ajouté à votre panier");
     } else { // IF QUANTITY AND COLOR ARE NOT CORRECTLY SELECTED
         alert("quantité ou couleur incorrectement selectionnées, veuillez corriger");
     }
-
-
-
-
 }
 
 let addToCartButton = document.getElementById('addToCart');

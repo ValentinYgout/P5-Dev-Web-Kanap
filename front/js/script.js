@@ -1,5 +1,3 @@
-
-
 // gather data from api
 async function getProducts() {
     let url = 'http://localhost:3000/api/products';
@@ -15,18 +13,18 @@ async function getProducts() {
 async function renderProducts() {
     let products = await getProducts();
     products.forEach(product => {
-       
+
         let items = document.getElementById('items');
         let newLink = document.createElement("a");
         let newArticle = document.createElement("article");
-        let newImage= document.createElement("img"); 
+        let newImage = document.createElement("img");
         let newName = document.createElement("h3");
         let newDescription = document.createElement("p");
 
         items.appendChild(newLink);
 
-        newLink.appendChild(newArticle);
-
+        newLink.appendChild(newArticle);P
+P
         newArticle.appendChild(newImage);
         newArticle.appendChild(newName);
         newArticle.appendChild(newDescription);
@@ -37,16 +35,14 @@ async function renderProducts() {
         newImage.setAttribute("alt", `${product.altTxt}`);
 
         newName.setAttribute("class", `productName`);
-        newName.innerHTML =`${product.name}`;
+        newName.innerHTML = `${product.name}`;
 
         newDescription.setAttribute("class", `productDescription`);
-        newDescription.innerHTML =`${product.description}`;
-        
-        
+        newDescription.innerHTML = `${product.description}`;
+
+
     });
-    
+
 }
 
 renderProducts();
-
-

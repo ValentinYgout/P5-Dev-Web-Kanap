@@ -1,10 +1,10 @@
 function getParamUrl(paramName) {
     if (paramName === null) {
-        return
+        return ''
     } else {
 
-        const value = new URL(window.location.href).searchParams.get(paramName)
-        return value
+        const value = new URL(window.location.href).searchParams.get(paramName);
+        return value;
     }
 }
 
@@ -15,12 +15,11 @@ function getCart() {
             return []
         }    
 
-        let cart = JSON.parse(localStorage.getItem('cart')) // parse the Localstorage string data into JSON
-        return cart
+        let cart = JSON.parse(localStorage.getItem('cart')); // parse the Localstorage string data into JSON
+        return cart;
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return []
     }    
-
 }    
