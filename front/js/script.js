@@ -23,8 +23,7 @@ async function renderProducts() {
 
         items.appendChild(newLink);
 
-        newLink.appendChild(newArticle);P
-P
+        newLink.appendChild(newArticle);
         newArticle.appendChild(newImage);
         newArticle.appendChild(newName);
         newArticle.appendChild(newDescription);
