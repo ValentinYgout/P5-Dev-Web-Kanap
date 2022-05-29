@@ -29,21 +29,12 @@ async function renderProduct() {
 
 
     let colors = document.getElementById('colors');
-    // let optionReset = document.querySelector("#colors > option")
-    // colors.removeChild(optionReset)
     for (let i = 0; i < product.colors.length; i++) {
         let option = new Option(product.colors[i], product.colors[i]);
         colors.appendChild(option);
     }
 }
 renderProduct();
-
-function getCart(item = "cart") {
-
-    let cart = localStorage.getItem(item);
-    cart = JSON.parse(cart);
-    return cart;
-}
 
 function addToCart() {
     // cart variable  contains JSON cart from getCart()
@@ -65,6 +56,7 @@ function addToCart() {
             if (cart[i].idColor == item.idColor) { // If product already exists in cart, increase quantity.
                 cart[i].quantity = parseInt(cart[i].quantity) + parseInt(item.quantity);
                 localStorage.cart = JSON.stringify(cart);
+                alert("Votre article a bien été ajouté à votre panier");
                 return;
             }
         }
