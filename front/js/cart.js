@@ -1,5 +1,5 @@
 let cart = getCart();
-// if the basket is empty, only display a short  message informing that the cart is empty.
+// if the cart is empty, only display a short  message informing that the cart is empty.
 function basketIsEmpty() {
     document.querySelector('#cartAndFormContainer h1').innerHTML = 'Votre Panier est vide'
     document.querySelector('.cart').innerHTML = ''
@@ -14,9 +14,7 @@ if (cart.length == 0) {
     function renderCart() {
         if (cart.length == 0) {
             basketIsEmpty()
-            console.log('success')
         } else {
-            console.log('fail')
             for (let item of cart) {
                 let url = `http://localhost:3000/api/products/${item.id}`;
                 try {
@@ -24,7 +22,6 @@ if (cart.length == 0) {
                         .then(function (response) {
                             return response.json()
                         }).then(function (data) {
-                            //    console.log(data)
                             let cartItems = document.getElementById('cart__items');
                             let newCartItem = document.createElement("article");
                             cartItems.appendChild(newCartItem);
@@ -77,17 +74,31 @@ if (cart.length == 0) {
                                     let dataId = data.id;
                                     let dataColor = data.color;
                                     // Update Localstorage data  according to on-screen data modifications
-                                    if (dataId + dataColor == cart[i].idColor) {
+                                    console.log(e.target.value)
+                                    if (e.target.value == 0) {
+
+                                        let confirmation = confirm("voulez vous supprimer cet article?")
+                                        if (confirmation) {
+                                            cart.splice(i, 1);
+                                            localStorage.setItem('cart', JSON.stringify(cart));
+                                            e.target.closest('article').remove();
+                                            break;
+
+                                        }
+                                    } else if (dataId + dataColor == cart[i].idColor) {
                                         cart[i].quantity = e.target.value;
                                         localStorage.setItem('cart', JSON.stringify(cart));
                                         break;
                                     }
                                 }
                                 //update total quantity and price displays after modifying the quantity of a product
-                                calcQty();
-                                calcPrice();
+                                if (cart.length == 0) {
+                                    basketIsEmpty()
+                                } else {
+                                    calcQty();
+                                    calcPrice();
+                                }
                             })
-                            console.log(fetchedCartData);
                             let settingsDelete = document.createElement("div");
                             settingsDelete.setAttribute("class", `cart__item__content__settings__delete`);
                             contentsettings.appendChild(settingsDelete);
@@ -174,9 +185,11 @@ if (cart.length == 0) {
     let cityResult = false;
     let emailResult = false;
     let firstNameResult = false;
+
     nameRegex = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._-\s]{1,50}$/;
     emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     addressRegex = /^[#.0-9a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ\s,-]+$/;
+
     let firstName = document.getElementById('firstName');
     firstName.addEventListener('input', (event) => {
         let firstNameTarget = event.target;
